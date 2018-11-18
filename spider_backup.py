@@ -116,6 +116,8 @@ class DouYin(object):
             self.getToken()
             token = self.load_json()['token']
             sign = self.getSign(token, query)
+        print('query:',query)
+        print('sign:',sign)
         params['mas'] = sign['mas']
         params['as'] = sign['as']
         params['ts'] = sign['ts']
@@ -247,43 +249,44 @@ class DouYin(object):
         Returns:
             None
         """
-        self.hello()
-        user_id = input('请输入ID (例如95006183):')
-        user_id = user_id if user_id else '95006183'
-        watermark_flag = input('是否下载带水印的视频 (0-否(默认), 1-是):')
-        watermark_flag = watermark_flag if watermark_flag != '' else '0'
-        watermark_flag = bool(int(watermark_flag))
-        type_flag = input('f-收藏的(默认), p-上传的:')
-        type_flag = type_flag if type_flag != '' else 'f'
-        save_dir = input('保存路径 (例如"E:/Download/", 默认"./Download/"):')
-        save_dir = save_dir if save_dir else "./Download/"
-        video_names, video_urls, share_urls, nickname = self.get_video_urls(user_id, type_flag)
-        nickname_dir = os.path.join(save_dir, nickname)
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-        if nickname not in os.listdir(save_dir):
-            os.mkdir(nickname_dir)
-        if type_flag == 'f':
-            if 'favorite' not in os.listdir(nickname_dir):
-                os.mkdir(os.path.join(nickname_dir, 'favorite'))
-        print('视频下载中:共有%d个作品!\n' % len(video_urls))
-        for num in range(len(video_urls)):
-            print('  解析第%d个视频链接 [%s] 中，请稍后!\n' % (num + 1, share_urls[num]))
-            if '\\' in video_names[num]:
-                video_name = video_names[num].replace('\\', '')
-            elif '/' in video_names[num]:
-                video_name = video_names[num].replace('/', '')
-            else:
-                video_name = video_names[num]
-            video_path = os.path.join(nickname_dir, video_name) if type_flag != 'f' else os.path.join(nickname_dir,
-                                                                                                      'favorite',
-                                                                                                      video_name)
-            if os.path.isfile(video_path):
-                print('视频已存在')
-            else:
-                self.video_downloader(video_urls[num], video_path, watermark_flag)
-            print('\n')
-        print('下载完成!')
+        # self.hello()
+        # user_id = input('请输入ID (例如95006183):')
+        # user_id = user_id if user_id else '95006183'
+        # watermark_flag = input('是否下载带水印的视频 (0-否(默认), 1-是):')
+        # watermark_flag = watermark_flag if watermark_flag != '' else '0'
+        # watermark_flag = bool(int(watermark_flag))
+        # type_flag = input('f-收藏的(默认), p-上传的:')
+        # type_flag = type_flag if type_flag != '' else 'f'
+        # save_dir = input('保存路径 (例如"E:/Download/", 默认"./Download/"):')
+        # save_dir = save_dir if save_dir else "./Download/"
+        # video_names, video_urls, share_urls, nickname = self.get_video_urls(user_id, type_flag)
+        video_names, video_urls, share_urls, nickname = self.get_video_urls('95006183', 'f')
+        # nickname_dir = os.path.join(save_dir, nickname)
+        # if not os.path.exists(save_dir):
+        #     os.makedirs(save_dir)
+        # if nickname not in os.listdir(save_dir):
+        #     os.mkdir(nickname_dir)
+        # if type_flag == 'f':
+        #     if 'favorite' not in os.listdir(nickname_dir):
+        #         os.mkdir(os.path.join(nickname_dir, 'favorite'))
+        # print('视频下载中:共有%d个作品!\n' % len(video_urls))
+        # for num in range(len(video_urls)):
+        #     print('  解析第%d个视频链接 [%s] 中，请稍后!\n' % (num + 1, share_urls[num]))
+        #     if '\\' in video_names[num]:
+        #         video_name = video_names[num].replace('\\', '')
+        #     elif '/' in video_names[num]:
+        #         video_name = video_names[num].replace('/', '')
+        #     else:
+        #         video_name = video_names[num]
+        #     video_path = os.path.join(nickname_dir, video_name) if type_flag != 'f' else os.path.join(nickname_dir,
+        #                                                                                               'favorite',
+        #                                                                                               video_name)
+        #     if os.path.isfile(video_path):
+        #         print('视频已存在')
+        #     else:
+        #         self.video_downloader(video_urls[num], video_path, watermark_flag)
+        #     print('\n')
+        # print('下载完成!')
 
     def hello(self):
         """
