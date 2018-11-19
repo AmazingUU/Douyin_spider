@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85a065c-4901-4f89-af8f-6f406e6072e9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Douyin_spider.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Douyin_spider.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/spider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spider_backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/spider_backup.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,30 +15,31 @@
     <session id="-1404273317">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="4" />
-          <entry key="py" value="411" />
+          <entry key="py" value="1060" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Markdown" value="4" />
-          <entry key="Python" value="411" />
+          <entry key="Python" value="1060" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="md" value="6" />
-          <entry key="py" value="1" />
+          <entry key="py" value="2" />
           <entry key="txt" value="4" />
         </counts>
       </usages-collector>
@@ -49,31 +47,34 @@
         <counts>
           <entry key="Markdown" value="6" />
           <entry key="PLAIN_TEXT" value="4" />
-          <entry key="Python" value="1" />
+          <entry key="Python" value="2" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/spider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+            <state relative-caret-position="252">
+              <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <marker date="1542552704242" expanded="true" signature="49:54" ph="..." />
+                <marker date="1542643598595" expanded="true" signature="249:543" ph="..." />
+                <marker date="1542643598595" expanded="true" signature="519:543" ph="..." />
+                <marker date="1542643598595" expanded="true" signature="591:2067" ph="..." />
+                <marker date="1542643598595" expanded="true" signature="2042:2067" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spider_backup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="148" column="43" selection-start-line="148" selection-start-column="43" selection-end-line="148" selection-end-column="43" />
+            <state relative-caret-position="189">
+              <caret line="113" column="20" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="20" />
               <folding>
                 <element signature="e#23#53#0" expanded="true" />
               </folding>
@@ -86,7 +87,7 @@
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="180">
-                <caret line="5" column="368" lean-forward="true" selection-start-line="5" selection-start-column="368" selection-end-line="5" selection-end-column="373" />
+                <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="644" />
               </first_editor>
               <second_editor />
             </state>
@@ -156,7 +157,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.spider_backup">
+  <component name="RunManager" selected="Python.spider">
     <configuration name="spider" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Douyin_spider" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -205,8 +206,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.spider_backup" />
         <item itemvalue="Python.spider" />
+        <item itemvalue="Python.spider_backup" />
       </list>
     </recent_temporary>
   </component>
@@ -250,36 +251,37 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/test.txt" />
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="180">
-            <caret line="5" column="368" lean-forward="true" selection-start-line="5" selection-start-column="368" selection-end-line="5" selection-end-column="373" />
+            <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="644" />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spider.py">
+    <entry file="file://$PROJECT_DIR$/spider_backup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+        <state relative-caret-position="189">
+          <caret line="113" column="20" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="20" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1542552704242" expanded="true" signature="49:54" ph="..." />
+            <element signature="e#23#53#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spider_backup.py">
+    <entry file="file://$PROJECT_DIR$/spider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="148" column="43" selection-start-line="148" selection-start-column="43" selection-end-line="148" selection-end-column="43" />
+        <state relative-caret-position="252">
+          <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
           <folding>
-            <element signature="e#23#53#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+            <marker date="1542643598595" expanded="true" signature="249:543" ph="..." />
+            <marker date="1542643598595" expanded="true" signature="519:543" ph="..." />
+            <marker date="1542643598595" expanded="true" signature="591:2067" ph="..." />
+            <marker date="1542643598595" expanded="true" signature="2042:2067" ph="..." />
           </folding>
         </state>
       </provider>
