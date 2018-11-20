@@ -1,6 +1,8 @@
 # Douyin_spider
 抖音视频下载
 
+create table if not exists video(id int primary key auto_increment,author varchar(30),video_id varchar(25),description text,like_count int(9),comment_count int(7),share_count int(8),music_author varchar(30),music_title varchar(50),filename text,download_url text,create_time datetime);
+
 # https://cuijiahua.com/blog/2018/03/spider-5.html/comment-page-1/#comments
 
 https://github.com/AppSign/douyin
