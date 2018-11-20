@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85a065c-4901-4f89-af8f-6f406e6072e9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/download/6625130025840545028.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/你爸爸突然进来了。就不好发挥了嘎。.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/八年前，走在最潮流的前端。现在我想一巴掌呼死以前的自己。.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/副乳大肚腩就这样没啦，每天三组，每组坚持1-3分钟.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/和 @冬瓜哥哥 一起 #合拍 就说世界上怎么会有这么想的人 😱😱@抖音小助手.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/娱乐圈的模范夫妇、邓超孙俪有喜欢的吗？@抖音小助手.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/对自己好点吧，求你们了。.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/我能做的不多，一是举手之劳，二是传播。第一次遇到老爷爷的时候我要赶时间，就没停。.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/本姑娘生日谁来祝福.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/水库大鱼太多了，两个小时后拉上来看看有没有货，农村生活视频每天更新.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/甩头舞来啦～.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/download/马上直播了@抖音小助手.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/spider.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,13 +28,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="33" />
-          <entry key="py" value="2054" />
+          <entry key="py" value="2239" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Markdown" value="33" />
-          <entry key="Python" value="2054" />
+          <entry key="Python" value="2239" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -65,25 +55,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/spider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8">
-              <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
+            <state relative-caret-position="388">
+              <caret line="135" column="38" selection-start-line="135" selection-start-column="38" selection-end-line="135" selection-end-column="38" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <marker date="1542729514157" expanded="true" signature="259:487" ph="..." />
-                <marker date="1542729514157" expanded="true" signature="2403:2724" ph="..." />
+                <marker date="1542730140518" expanded="true" signature="292:520" ph="..." />
+                <marker date="1542730140518" expanded="true" signature="2436:2757" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="42" column="71" selection-start-line="42" selection-start-column="71" selection-end-line="42" selection-end-column="71" />
+            <state relative-caret-position="180">
+              <caret line="5" column="14" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="14" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -141,8 +131,8 @@
       <list>
         <option value="$PROJECT_DIR$/spider_backup.py" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/spider.py" />
         <option value="$PROJECT_DIR$/db_helper.py" />
+        <option value="$PROJECT_DIR$/spider.py" />
       </list>
     </option>
   </component>
@@ -256,13 +246,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10432034" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10432034" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32899022" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32899022" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -302,18 +293,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8">
-          <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1542729514157" expanded="true" signature="259:487" ph="..." />
-            <marker date="1542729514157" expanded="true" signature="2403:2724" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/feed.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1836">
@@ -323,10 +302,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/db_helper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="42" column="71" selection-start-line="42" selection-start-column="71" selection-end-line="42" selection-end-column="71" />
+        <state relative-caret-position="180">
+          <caret line="5" column="14" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="14" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="388">
+          <caret line="135" column="38" selection-start-line="135" selection-start-column="38" selection-end-line="135" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <marker date="1542730140518" expanded="true" signature="292:520" ph="..." />
+            <marker date="1542730140518" expanded="true" signature="2436:2757" ph="..." />
           </folding>
         </state>
       </provider>

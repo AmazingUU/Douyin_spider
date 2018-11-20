@@ -3,6 +3,9 @@ import os
 
 import requests
 
+from db_helper import DbHelper
+
+
 def get_device(url):
     r = requests.get(url).json()
     device_info = r['data']
@@ -98,6 +101,10 @@ def save2file(filename,stream):
             f.write(stream)
 
 if __name__ == '__main__':
+    configs = {'host':'localhost','user':'root','password':'admin','db':'douyin'}
+    db = DbHelper()
+    db.connenct(configs)
+
     device_info = get_device('https://api.appsign.vip:2688/douyin/device/new/version/2.7.0')
     token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
     app_info = get_app_info()
@@ -110,18 +117,20 @@ if __name__ == '__main__':
     params['ts'] = sign['ts']
     video_list = get_video_list(params)
     for video in video_list:
-        author = video['author']['nickname']
-        video_id = video['aweme_id']
-        description = video['desc']
-        like_count = video['statistics']['digg_count']
-        comment_count = video['statistics']['comment_count']
-        share_count = video['statistics']['share_count']
-        music_author = video['music']['author']
-        music_title = video['music']['title']
-        download_url = video['video']['play_addr']['url_list'][0]
-        print('author_name:{}\tvideo_id:{}\ndesc:{}\nmusic_title:{}\tmusic_author:{}\nlike_count:{}\tcomment_count:{}\tshare_count:{}\ndownload_url:{}\n\n'.format(
-            author,video_id,description,music_title,music_author,like_count,comment_count,share_count,download_url
-        ))
+        data = {}
+        data['author'] = video['author']['nickname']
+        data['video_id'] = video['aweme_id']
+        data['description'] = video['desc']
+        data['like_count'] = video['statistics']['digg_count']
+        data['comment_count'] = video['statistics']['comment_count']
+        data['share_count'] = video['statistics']['share_count']
+        data['music_author'] = video['music']['author']
+        data['music_title'] = video['music']['title']
+        data['download_url'] = video['video']['play_addr']['url_list'][0]
+        # print('author_name:{}\tvideo_id:{}\ndesc:{}\nmusic_title:{}\tmusic_author:{}\nlike_count:{}\tcomment_count:{}\tshare_count:{}\ndownload_url:{}\n\n'.format(
+        #     author,video_id,description,music_title,music_author,like_count,comment_count,share_count,download_url
+        # ))
+        data['filename'] = data['description'] if data['description'] else data['description'] + data['video_id']
+        # download(filename,download_url)
 
-        filename = description if description else author + video_id
-        download(filename,download_url)
+        db.save_one_data_to_video(data)
