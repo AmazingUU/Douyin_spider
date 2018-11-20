@@ -2,12 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85a065c-4901-4f89-af8f-6f406e6072e9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/db_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Douyin_spider.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Douyin_spider.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/6625130025840545028.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/你爸爸突然进来了。就不好发挥了嘎。.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/八年前，走在最潮流的前端。现在我想一巴掌呼死以前的自己。.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/副乳大肚腩就这样没啦，每天三组，每组坚持1-3分钟.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/和 @冬瓜哥哥 一起 #合拍 就说世界上怎么会有这么想的人 😱😱@抖音小助手.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/娱乐圈的模范夫妇、邓超孙俪有喜欢的吗？@抖音小助手.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/对自己好点吧，求你们了。.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/我能做的不多，一是举手之劳，二是传播。第一次遇到老爷爷的时候我要赶时间，就没停。.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/本姑娘生日谁来祝福.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/水库大鱼太多了，两个小时后拉上来看看有没有货，农村生活视频每天更新.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/甩头舞来啦～.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download/马上直播了@抖音小助手.mp4" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,14 +37,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="md" value="32" />
-          <entry key="py" value="2040" />
+          <entry key="md" value="33" />
+          <entry key="py" value="2054" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Markdown" value="32" />
-          <entry key="Python" value="2040" />
+          <entry key="Markdown" value="33" />
+          <entry key="Python" value="2054" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -62,22 +68,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="120" column="20" selection-start-line="120" selection-start-column="8" selection-end-line="120" selection-end-column="20" />
+            <state relative-caret-position="-8">
+              <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <marker date="1542728382623" expanded="true" signature="259:487" ph="..." />
-                <marker date="1542728382623" expanded="true" signature="2403:2724" ph="..." />
+                <marker date="1542729514157" expanded="true" signature="259:487" ph="..." />
+                <marker date="1542729514157" expanded="true" signature="2403:2724" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/db_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="38" column="152" selection-start-line="38" selection-start-column="152" selection-end-line="38" selection-end-column="152" />
+            <state relative-caret-position="432">
+              <caret line="42" column="71" selection-start-line="42" selection-start-column="71" selection-end-line="42" selection-end-column="71" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -106,12 +112,12 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="108">
-                <caret line="3" column="283" selection-start-line="3" selection-start-column="283" selection-end-line="3" selection-end-column="283" />
+                <caret line="3" column="279" selection-start-line="3" selection-start-column="279" selection-end-line="3" selection-end-column="279" />
               </first_editor>
               <second_editor />
             </state>
@@ -134,9 +140,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/spider_backup.py" />
+        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/spider.py" />
         <option value="$PROJECT_DIR$/db_helper.py" />
-        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -250,7 +256,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10432034" />
       <window_info id="Structure" order="1" weight="0.25" />
@@ -277,13 +282,6 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/test.txt" />
-    <entry file="file://$PROJECT_DIR$/feed.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1836">
-          <caret line="52" column="89" selection-start-line="52" selection-start-column="89" selection-end-line="52" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spider_backup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-459">
@@ -294,35 +292,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="108">
+            <caret line="3" column="279" selection-start-line="3" selection-start-column="279" selection-end-line="3" selection-end-column="279" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/spider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="120" column="20" selection-start-line="120" selection-start-column="8" selection-end-line="120" selection-end-column="20" />
+        <state relative-caret-position="-8">
+          <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1542728382623" expanded="true" signature="259:487" ph="..." />
-            <marker date="1542728382623" expanded="true" signature="2403:2724" ph="..." />
+            <marker date="1542729514157" expanded="true" signature="259:487" ph="..." />
+            <marker date="1542729514157" expanded="true" signature="2403:2724" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/feed.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1836">
+          <caret line="52" column="89" selection-start-line="52" selection-start-column="89" selection-end-line="52" selection-end-column="89" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/db_helper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="38" column="152" selection-start-line="38" selection-start-column="152" selection-end-line="38" selection-end-column="152" />
+        <state relative-caret-position="432">
+          <caret line="42" column="71" selection-start-line="42" selection-start-column="71" selection-end-line="42" selection-end-column="71" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="108">
-            <caret line="3" column="283" selection-start-line="3" selection-start-column="283" selection-end-line="3" selection-end-column="283" />
-          </first_editor>
-          <second_editor />
         </state>
       </provider>
     </entry>
