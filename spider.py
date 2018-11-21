@@ -210,26 +210,14 @@ if __name__ == '__main__':
     token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
     app_info = get_app_info()
     params = get_common_params(device_info,app_info)
-    # params = get_params(device_info,app_info,'comment','6624074853378952455')
     query = params2str(params)
     sign = get_sign(token,query)
     params.update(sign)
-    print(sign)
+    # print(sign)
 
-    headers = {
-        "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
-    }
-    post_data = {'aweme_id' : '6624074853378952455'}
-    print(params2str(params))
-    resp = requests.post("https://aweme.snssdk.com/aweme/v1/aweme/detail/", params=params, data=post_data, headers=headers).json()
-    download_url = resp['aweme_detail']['video']['play_addr']['url_list'][0]
-    r = requests.get(download_url)
-    with open('test.mp4','wb') as f:
-        f.write(r.content)
-
-    # queue = Queue()
-    # Thread(target=put_into_queue,args=(params,queue)).start()
-    # Thread(target=get_from_queue,args=(queue,db)).start()
+    queue = Queue()
+    Thread(target=put_into_queue,args=(params,queue)).start()
+    Thread(target=get_from_queue,args=(queue,db)).start()
 
     # for video in video_list:
     #     data = {}
