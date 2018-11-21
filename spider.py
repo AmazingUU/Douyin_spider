@@ -122,7 +122,7 @@ def get_comment_info(params):
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
     }
     r = requests.get('https://aweme.snssdk.com/aweme/v2/comment/list/',params=params,headers=headers).json()
-    print(r)
+    # print(r)
     comment_list = r['comments']
     for comment in comment_list:
         data = {}
@@ -139,10 +139,10 @@ def get_comment_info(params):
             data['beReplied_like_count'] = comment['reply_comment'][0]['digg_count']
             data['beReplied_comment_time'] = timestamp2datetime(comment['reply_comment'][0]['create_time'])
         except:
-            data['beReplied_user'] = '无'
-            data['beReplied_content'] = '无'
-            data['beReplied_like_count'] = '无'
-            data['beReplied_comment_time'] = '无'
+            data['beReplied_user'] = None
+            data['beReplied_content'] = None
+            data['beReplied_like_count'] = None
+            data['beReplied_comment_time'] = None
         yield data
 
 def timestamp2datetime(timestamp):  # 时间戳转日期时间格式
@@ -214,14 +214,22 @@ if __name__ == '__main__':
     query = params2str(params)
     sign = get_sign(token,query)
     params.update(sign)
-    # print(sign)
+    print(sign)
 
-    # for data in get_comment_info(params):
-    #     print(data)
+    headers = {
+        "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
+    }
+    post_data = {'aweme_id' : '6624074853378952455'}
+    print(params2str(params))
+    resp = requests.post("https://aweme.snssdk.com/aweme/v1/aweme/detail/", params=params, data=post_data, headers=headers).json()
+    download_url = resp['aweme_detail']['video']['play_addr']['url_list'][0]
+    r = requests.get(download_url)
+    with open('test.mp4','wb') as f:
+        f.write(r.content)
 
-    queue = Queue()
-    Thread(target=put_into_queue,args=(params,queue)).start()
-    Thread(target=get_from_queue,args=(queue,db)).start()
+    # queue = Queue()
+    # Thread(target=put_into_queue,args=(params,queue)).start()
+    # Thread(target=get_from_queue,args=(queue,db)).start()
 
     # for video in video_list:
     #     data = {}

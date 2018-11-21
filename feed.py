@@ -3,7 +3,7 @@
 import requests
 from common import *
 """
-拉取首页视频
+下载指定短链接无水印视频到 当前目录/douyin.mp4
 Host: aweme.snssdk.com
 User-Agent: Aweme/2.7.0 (iPhone; iOS 9.0.1; Scale/2.00)
 """
@@ -13,7 +13,17 @@ token = getToken()
 # 获取新的设备信息  有效期永久
 device_info = getDevice()
 
-# 拼装参数
+def getAwemeIdByShortUrl(url):
+    try:
+        return requests.get(url, headers=header, allow_redirects=False).headers['location'].split("/video/")[1].split("/")[0]
+    except:
+        return ""
+
+aweme_id = getAwemeIdByShortUrl("http://v.douyin.com/dQxxCw/")
+if aweme_id == "":
+    print "短链接错误"
+    exit(-1)
+
 params = {
     "iid":              device_info['iid'],
     "idfa":             device_info['idfa'],
@@ -31,24 +41,27 @@ params = {
     "build_number": APPINFO['build_number'],
     "app_version":  APPINFO['app_version'],
     "aid":          APPINFO['aid'],
-    "ac":           "WIFI",
-    "count":        "6",
-    "feed_style":   "0",
-    "filter_warn":  "0",
-    "filter_warn":  "0",
-    "max_cursor":   "0",
-    "min_cursor":   "0",
-    "pull_type":    "1",
-    "type":         "0",
-    "volume":       "0.00"
+    "ac":           "WIFI"
 }
 
-sign = getSign(token, params)
+postParams={
+    "aweme_id": aweme_id
+}
+
+signParams = params
+signParams.update(postParams)
+sign = getSign(token, signParams)
 params['mas'] = sign['mas']
 params['as']  = sign['as']
 params['ts']  = sign['ts']
 print(params)
 
-# 拉取首页视频列表
-resp = requests.get("https://aweme.snssdk.com/aweme/v1/feed/", params=params, headers=header).json()
+# 获取视频详情
+resp = requests.get("https://aweme.snssdk.com/aweme/v1/aweme/detail/", params=params, data=postParams, headers=header).json()
 print(resp)
+play_addr = resp['aweme_detail']['video']['play_addr']['url_list'][0]
+print u"下载地址: " + play_addr
+
+saveFile = "douyin.mp4"
+resp = requests.get(play_addr)
+open(saveFile, "wb").write(resp.content)
