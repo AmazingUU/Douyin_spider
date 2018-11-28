@@ -13,12 +13,18 @@
  3. 保存视频到本地
 
 # 效果图
+![video][1]
+![comment][2]
+![download][3]
 
 # 特别感谢
-感谢 [AppSign][1] 提供免费加签服务
+感谢 [AppSign][4] 提供免费加签服务
 
 
-  [1]: https://github.com/AppSign/douyin
+  [1]: https://github.com/AmazingUU/Douyin_spider/blob/master/imgs/video.png
+  [2]: https://github.com/AmazingUU/Douyin_spider/blob/master/imgs/comment.png
+  [3]: https://github.com/AmazingUU/Douyin_spider/blob/master/imgs/download.png
+  [4]: https://github.com/AppSign/douyin
 
 SSL的问题：
 
