@@ -109,6 +109,7 @@ def get_video_info(params):  # 获取视频相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
     }
+    # 视频接口url样例：https://aweme-eagle.snssdk.com/aweme/v1/feed/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=mobile&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&count=6&feed_style=0&filter_warn=0&max_cursor=0&min_cursor=0&pull_type=0&type=0&volume=0.06&mas=0161b6c4a20babcf6829e30950a9f3a577adb04abc0c6da0eeca91&as=a105e18ff4e32b1a102320&ts=1542462004
     # 返回视频相关信息的JSON，视频相关数据在aweme_list里
     r = requests.get('https://aweme-eagle.snssdk.com/aweme/v1/feed/', params=params, headers=headers).json()
     video_list = r['aweme_list']
@@ -135,6 +136,7 @@ def get_comment_info(params):  # 获取评论相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
     }
+    # 评论接口样例：https://aweme.snssdk.com/aweme/v2/comment/list/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=WIFI&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&aweme_id=6624665048084122888&count=20&cursor=0&insert_ids=&mas=01198234838414691343a02f57be4c745b5a7406c5ebf53dbcd6a8&as=a195301fa2978b61f50218&ts=1542783346
     # 返回评论相关信息的JSON，评论相关数据在comments里
     r = requests.get('https://aweme.snssdk.com/aweme/v2/comment/list/', params=params, headers=headers).json()
     comment_list = r['comments']
@@ -173,9 +175,6 @@ def download(filename, url):  # 下载视频
     }
     # 请求视频播放地址，二进制流保存到本地
     response = requests.get(url, headers=headers)
-    # content_size = int(r.headers['content-length'])
-    # print(content_size)
-    # stream = r.content
     chunk_size = 1024  # 切分视频流，一次保存视频流大小为1M，当读取到1M时保存到文件一次
     content_size = int(response.headers['content-length'])  # 视频流总大小
     if response.status_code == 200:
@@ -243,22 +242,3 @@ if __name__ == '__main__':
     queue = Queue()
     Thread(target=put_into_queue, args=(params, queue)).start()
     Thread(target=get_from_queue, args=(queue, db)).start()
-
-    # for video in video_list:
-    #     data = {}
-    #     data['author'] = video['author']['nickname']
-    #     data['video_id'] = video['aweme_id']
-    #     data['description'] = video['desc']
-    #     data['like_count'] = video['statistics']['digg_count']
-    #     data['comment_count'] = video['statistics']['comment_count']
-    #     data['share_count'] = video['statistics']['share_count']
-    #     data['music_author'] = video['music']['author']
-    #     data['music_title'] = video['music']['title']
-    #     data['download_url'] = video['video']['play_addr']['url_list'][0]
-    #     # print('author_name:{}\tvideo_id:{}\ndesc:{}\nmusic_title:{}\tmusic_author:{}\nlike_count:{}\tcomment_count:{}\tshare_count:{}\ndownload_url:{}\n\n'.format(
-    #     #     author,video_id,description,music_title,music_author,like_count,comment_count,share_count,download_url
-    #     # ))
-    #     data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
-    #     download(data['filename'],data['download_url'])
-    #
-    #     db.save_one_data_to_video(data)

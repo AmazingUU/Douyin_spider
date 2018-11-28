@@ -1,3 +1,10 @@
+'''
+数据库操作类
+所需表：video、comment
+建表语句：
+create table if not exists video(id int primary key auto_increment,author varchar(30),video_id varchar(25),description text,like_count int(9),comment_count int(7),share_count int(8),music_author varchar(30),music_title varchar(50),filename text,download_url text,create_time datetime);
+create table if not exists comment(id int primary key auto_increment,video_id varchar(25),user varchar(30),content text,like_count int(7),comment_time datetime,beReplied_user varchar(30),beReplied_content text,beReplied_like_count int(7),beReplied_comment_time datetime,create_time datetime);
+'''
 import time
 
 import pymysql
