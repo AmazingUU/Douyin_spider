@@ -225,7 +225,7 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
 
 
 if __name__ == '__main__':
-    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
+    configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
     db = DbHelper()
     db.connenct(configs)
     # 因为该程序一直跑，一直需要连接数据库，暂时没写关闭数据库的逻辑。当程序停止时，数据库连接也就断开了
