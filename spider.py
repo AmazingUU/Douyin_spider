@@ -198,9 +198,11 @@ def download(filename, url):  # 下载视频
 
 
 def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据，放进队列
-    while True:
+    i = 0
+    while i < 10000: # 每天抓取10000个视频
         video_params = get_video_params(params)
         for video_data in get_video_info(video_params):
+            i += 1
             video_data['type'] = 'video'
             queue.put_nowait(video_data)
             comment_params = get_comment_params(params, video_data['video_id'])
@@ -208,27 +210,30 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
                 comment_data['type'] = 'comment'
                 queue.put_nowait(comment_data)
         time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
-
+    data = {'type': 'finished'} # 抓取完成标志
+    queue.put_nowait(data)
 
 def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保存到数据库和下载视频
     while True:
         try:
             data = queue.get_nowait()
             if data['type'] == 'video':
-                download(data['filename'], data['download_url'])
+                # download(data['filename'], data['download_url']) # 1w个视频大约需要20G，因存储空间不足，暂不下载
                 db.save_one_data_to_video(data)
             elif data['type'] == 'comment':
                 db.save_one_data_to_comment(data)
+            elif data['type'] == 'finished': # 抓取完成后子线程退出循环
+                queue.put_nowait(data) # 告诉主线程抓取完成
+                break
         except:
             print("queue is empty wait for a while")
             time.sleep(2)
 
 
 if __name__ == '__main__':
-    configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
+    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
     db = DbHelper()
     db.connenct(configs)
-    # 因为该程序一直跑，一直需要连接数据库，暂时没写关闭数据库的逻辑。当程序停止时，数据库连接也就断开了
 
     device_info = get_device('https://api.appsign.vip:2688/douyin/device/new/version/2.7.0')
     token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
@@ -242,3 +247,13 @@ if __name__ == '__main__':
     queue = Queue()
     Thread(target=put_into_queue, args=(params, queue)).start()
     Thread(target=get_from_queue, args=(queue, db)).start()
+
+    while True: # 该循环是用来判断何时关闭数据库
+        try:
+            data = queue.get_nowait()
+            if data['type'] == 'finished':
+                db.close()
+                break
+        except:
+            print('spidering...')
+            time.sleep(10)
