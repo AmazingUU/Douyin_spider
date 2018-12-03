@@ -231,7 +231,7 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
 
 
 if __name__ == '__main__':
-    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
+    configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
     db = DbHelper()
     db.connenct(configs)
 
