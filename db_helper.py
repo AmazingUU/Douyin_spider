@@ -49,9 +49,9 @@ class DbHelper(object):
                 data['share_count'], data['music_author'], data['music_title'], data['filename'], data['download_url']))
                 self.db.commit()
                 # self.mutex = 0  # 解锁
-                print('{} insert into video'.format(data['video_id']))
+                print('{}\t{} insert into video'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['video_id']))
         except Exception as e:
-            print('save video_id:{} fail,error:{}'.format(data['video_id'], str(e)))
+            print('{}\tsave video_id:{} fail,error:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['video_id'], str(e)))
         finally:
             self.mutex = 0  # 解锁
 
@@ -69,9 +69,9 @@ class DbHelper(object):
                 data['beReplied_comment_time']))
                 self.db.commit()
                 self.mutex = 0  # 解锁
-                print('user:{} comment insert into comment'.format(data['user']))
+                print('{}\tuser:{} comment insert into comment'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['user']))
         except Exception as e:
-            print('save user:{} comment fail,error:{}'.format(data['user'], str(e)))
+            print('{}\tsave user:{} comment fail,error:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['user'], str(e)))
         finally:
             self.mutex = 0  # 解锁
 
