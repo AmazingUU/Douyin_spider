@@ -124,9 +124,7 @@ def get_video_info(params):  # 获取视频相关数据
         data['music_author'] = video['music']['author']  # 背景音乐作者
         data['music_title'] = video['music']['title']  # 背景音乐名称
         data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
-        # print('author_name:{}\tvideo_id:{}\ndesc:{}\nmusic_title:{}\tmusic_author:{}\nlike_count:{}\tcomment_count:{}\tshare_count:{}\ndownload_url:{}\n\n'.format(
-        #     author,video_id,description,music_title,music_author,like_count,comment_count,share_count,download_url
-        # ))
+        print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['video_id']))
         # 下载保存的文件名称
         data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
         yield data
@@ -160,6 +158,8 @@ def get_comment_info(params):  # 获取评论相关数据
             data['beReplied_content'] = None
             data['beReplied_like_count'] = None
             data['beReplied_comment_time'] = None
+        print('{}\tget user:{} comment'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+                                           data['user']))
         yield data
 
 
