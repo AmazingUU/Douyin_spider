@@ -124,7 +124,8 @@ def get_video_info(params):  # 获取视频相关数据
         data['music_author'] = video['music']['author']  # 背景音乐作者
         data['music_title'] = video['music']['title']  # 背景音乐名称
         data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
-        print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),data['video_id']))
+        print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+                                           data['video_id']))
         # 下载保存的文件名称
         data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
         yield data
@@ -159,7 +160,7 @@ def get_comment_info(params):  # 获取评论相关数据
             data['beReplied_like_count'] = None
             data['beReplied_comment_time'] = None
         print('{}\tget user:{} comment'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
-                                           data['user']))
+                                               data['user']))
         yield data
 
 
@@ -199,7 +200,7 @@ def download(filename, url):  # 下载视频
 
 def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据，放进队列
     i = 0
-    while i < 10000: # 每天抓取10000个视频
+    while i < 10000:  # 每天抓取10000个视频
         video_params = get_video_params(params)
         for video_data in get_video_info(video_params):
             i += 1
@@ -210,8 +211,9 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
                 comment_data['type'] = 'comment'
                 queue.put_nowait(comment_data)
         time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
-    data = {'type': 'finished'} # 抓取完成标志
+    data = {'type': 'finished'}  # 抓取完成标志
     queue.put_nowait(data)
+
 
 def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保存到数据库和下载视频
     while True:
@@ -222,8 +224,8 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
                 db.save_one_data_to_video(data)
             elif data['type'] == 'comment':
                 db.save_one_data_to_comment(data)
-            elif data['type'] == 'finished': # 抓取完成后子线程退出循环
-                queue.put_nowait(data) # 告诉主线程抓取完成
+            elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
+                queue.put_nowait(data)  # 告诉主线程抓取完成
                 break
         except:
             print("queue is empty wait for a while")
@@ -248,7 +250,7 @@ if __name__ == '__main__':
     Thread(target=put_into_queue, args=(params, queue)).start()
     Thread(target=get_from_queue, args=(queue, db)).start()
 
-    while True: # 该循环是用来判断何时关闭数据库
+    while True:  # 该循环是用来判断何时关闭数据库
         try:
             data = queue.get_nowait()
             if data['type'] == 'finished':
