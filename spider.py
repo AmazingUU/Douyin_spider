@@ -111,23 +111,33 @@ def get_video_info(params):  # 获取视频相关数据
     }
     # 视频接口url样例：https://aweme-eagle.snssdk.com/aweme/v1/feed/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=mobile&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&count=6&feed_style=0&filter_warn=0&max_cursor=0&min_cursor=0&pull_type=0&type=0&volume=0.06&mas=0161b6c4a20babcf6829e30950a9f3a577adb04abc0c6da0eeca91&as=a105e18ff4e32b1a102320&ts=1542462004
     # 返回视频相关信息的JSON，视频相关数据在aweme_list里
-    r = requests.get('https://aweme-eagle.snssdk.com/aweme/v1/feed/', params=params, headers=headers).json()
-    video_list = r['aweme_list']
-    for video in video_list:  # 共6个video
+    try:
+        r = requests.get('https://aweme-eagle.snssdk.com/aweme/v1/feed/', params=params, headers=headers).json()
+        video_list = r['aweme_list']
+        for video in video_list:  # 共6个video
+            data = {}
+            data['result'] = 'success'
+            data['author'] = video['author']['nickname']  # 视频作者
+            data['video_id'] = video['aweme_id']  # 视频id
+            data['description'] = video['desc']  # 描述
+            data['like_count'] = video['statistics']['digg_count']  # 点赞数
+            data['comment_count'] = video['statistics']['comment_count']  # 评论数
+            data['share_count'] = video['statistics']['share_count']  # 分享数
+            data['music_author'] = video['music']['author']  # 背景音乐作者
+            data['music_title'] = video['music']['title']  # 背景音乐名称
+            data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
+            print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+                                               data['video_id']))
+            # 下载保存的文件名称
+            data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
+            yield data
+
+
+
+    except Exception as e:
+        print('get_video_info() error,',e)
         data = {}
-        data['author'] = video['author']['nickname']  # 视频作者
-        data['video_id'] = video['aweme_id']  # 视频id
-        data['description'] = video['desc']  # 描述
-        data['like_count'] = video['statistics']['digg_count']  # 点赞数
-        data['comment_count'] = video['statistics']['comment_count']  # 评论数
-        data['share_count'] = video['statistics']['share_count']  # 分享数
-        data['music_author'] = video['music']['author']  # 背景音乐作者
-        data['music_title'] = video['music']['title']  # 背景音乐名称
-        data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
-        print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
-                                           data['video_id']))
-        # 下载保存的文件名称
-        data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
+        data['result'] = 'error'
         yield data
 
 
@@ -137,30 +147,39 @@ def get_comment_info(params):  # 获取评论相关数据
     }
     # 评论接口样例：https://aweme.snssdk.com/aweme/v2/comment/list/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=WIFI&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&aweme_id=6624665048084122888&count=20&cursor=0&insert_ids=&mas=01198234838414691343a02f57be4c745b5a7406c5ebf53dbcd6a8&as=a195301fa2978b61f50218&ts=1542783346
     # 返回评论相关信息的JSON，评论相关数据在comments里
-    r = requests.get('https://aweme.snssdk.com/aweme/v2/comment/list/', params=params, headers=headers).json()
-    comment_list = r['comments']
-    for comment in comment_list:  # 共10个comment
+    try:
+        r = requests.get('https://aweme.snssdk.com/aweme/v2/comment/list/', params=params, headers=headers).json()
+        comment_list = r['comments']
+        for comment in comment_list:  # 共10个comment
+            data = {}
+            data['result'] = 'success'
+            data['video_id'] = comment['aweme_id']  # 被评论视频id
+            data['user'] = comment['user']['nickname']  # 发表人
+            data['content'] = comment['text']  # 内容
+            data['like_count'] = comment['digg_count']  # 点赞数
+            # time = int(comment['create_time'] / 1000)
+            # dateArray = datetime.datetime.fromtimestamp(time)
+            data['comment_time'] = timestamp2datetime(comment['create_time'])  # 评论时间
+            try:
+                # 最新评论中经常有回复别人评论的情况，所以记录下被回复的用户名、内容、点赞数和评论时间
+                data['beReplied_user'] = comment['reply_comment'][0]['user']['nickname']
+                data['beReplied_content'] = comment['reply_comment'][0]['text']
+                data['beReplied_like_count'] = comment['reply_comment'][0]['digg_count']
+                data['beReplied_comment_time'] = timestamp2datetime(comment['reply_comment'][0]['create_time'])
+            except:
+                data['beReplied_user'] = None
+                data['beReplied_content'] = None
+                data['beReplied_like_count'] = None
+                data['beReplied_comment_time'] = None
+            print('{}\tget user:{} comment'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+                                                   data['user']))
+            yield data
+
+
+    except Exception as e:
+        print('get_comment_info() error,',e)
         data = {}
-        data['video_id'] = comment['aweme_id']  # 被评论视频id
-        data['user'] = comment['user']['nickname']  # 发表人
-        data['content'] = comment['text']  # 内容
-        data['like_count'] = comment['digg_count']  # 点赞数
-        # time = int(comment['create_time'] / 1000)
-        # dateArray = datetime.datetime.fromtimestamp(time)
-        data['comment_time'] = timestamp2datetime(comment['create_time'])  # 评论时间
-        try:
-            # 最新评论中经常有回复别人评论的情况，所以记录下被回复的用户名、内容、点赞数和评论时间
-            data['beReplied_user'] = comment['reply_comment'][0]['user']['nickname']
-            data['beReplied_content'] = comment['reply_comment'][0]['text']
-            data['beReplied_like_count'] = comment['reply_comment'][0]['digg_count']
-            data['beReplied_comment_time'] = timestamp2datetime(comment['reply_comment'][0]['create_time'])
-        except:
-            data['beReplied_user'] = None
-            data['beReplied_content'] = None
-            data['beReplied_like_count'] = None
-            data['beReplied_comment_time'] = None
-        print('{}\tget user:{} comment'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
-                                               data['user']))
+        data['result'] = 'error'
         yield data
 
 
@@ -203,13 +222,24 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
     while i < 10000:  # 每天抓取10000个视频
         video_params = get_video_params(params)
         for video_data in get_video_info(video_params):
-            i += 1
-            video_data['type'] = 'video'
-            queue.put_nowait(video_data)
-            comment_params = get_comment_params(params, video_data['video_id'])
-            for comment_data in get_comment_info(comment_params):
-                comment_data['type'] = 'comment'
-                queue.put_nowait(comment_data)
+            if video_data['result'] == 'success':
+                i += 1
+                video_data['type'] = 'video'
+                queue.put_nowait(video_data)
+                comment_params = get_comment_params(params, video_data['video_id'])
+                for comment_data in get_comment_info(comment_params):
+                    if comment_data['result'] == 'success':
+                        comment_data['type'] = 'comment'
+                        queue.put_nowait(comment_data)
+                        
+                        
+                        
+                    elif comment_data['result'] == 'error':
+                        queue.put_nowait(video_data)
+                        break
+            elif video_data['result'] == 'error':
+                queue.put_nowait(video_data)
+                break
         time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
     data = {'type': 'finished'}  # 抓取完成标志
     queue.put_nowait(data)
@@ -219,13 +249,19 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
     while True:
         try:
             data = queue.get_nowait()
-            if data['type'] == 'video':
-                # download(data['filename'], data['download_url']) # 1w个视频大约需要20G，因存储空间不足，暂不下载
-                db.save_one_data_to_video(data)
-            elif data['type'] == 'comment':
-                db.save_one_data_to_comment(data)
-            elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
-                queue.put_nowait(data)  # 告诉主线程抓取完成
+            if data['result'] == 'success':
+                if data['type'] == 'video':
+                    # download(data['filename'], data['download_url']) # 1w个视频大约需要20G，因存储空间不足，暂不下载
+                    db.save_one_data_to_video(data)
+                elif data['type'] == 'comment':
+                    db.save_one_data_to_comment(data)
+                elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
+                    queue.put_nowait(data)  # 告诉主线程抓取完成
+                    break
+                    
+                    
+            elif data['result'] == 'error':
+                queue.put_nowait(data) 
                 break
         except:
             print("queue is empty wait for a while")
@@ -233,7 +269,7 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
 
 
 if __name__ == '__main__':
-    configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
+    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
     db = DbHelper()
     db.connenct(configs)
 
@@ -253,6 +289,9 @@ if __name__ == '__main__':
     while True:  # 该循环是用来判断何时关闭数据库
         try:
             data = queue.get_nowait()
+            if data['result'] == 'error':
+                db.close()
+                break
             if data['type'] == 'finished':
                 db.close()
                 break
