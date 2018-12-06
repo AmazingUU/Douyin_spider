@@ -131,11 +131,8 @@ def get_video_info(params):  # 获取视频相关数据
             # 下载保存的文件名称
             data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
             yield data
-
-
-
     except Exception as e:
-        print('get_video_info() error,',e)
+        print('get_video_info() error,', e)
         data = {}
         data['result'] = 'error'
         yield data
@@ -174,10 +171,8 @@ def get_comment_info(params):  # 获取评论相关数据
             print('{}\tget user:{} comment'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
                                                    data['user']))
             yield data
-
-
     except Exception as e:
-        print('get_comment_info() error,',e)
+        print('get_comment_info() error,', e)
         data = {}
         data['result'] = 'error'
         yield data
@@ -219,11 +214,12 @@ def download(filename, url):  # 下载视频
 
 def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据，放进队列
     i = 0
-    while i < 10000:  # 每天抓取10000个视频
+    while i < 10000:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据
         video_params = get_video_params(params)
         for video_data in get_video_info(video_params):
             if video_data['result'] == 'success':
                 i += 1
+                print('today video num:', i)
                 video_data['type'] = 'video'
                 queue.put_nowait(video_data)
                 comment_params = get_comment_params(params, video_data['video_id'])
@@ -231,9 +227,6 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
                     if comment_data['result'] == 'success':
                         comment_data['type'] = 'comment'
                         queue.put_nowait(comment_data)
-                        
-                        
-                        
                     elif comment_data['result'] == 'error':
                         queue.put_nowait(video_data)
                         break
@@ -241,7 +234,8 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
                 queue.put_nowait(video_data)
                 break
         time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
-    data = {'type': 'finished'}  # 抓取完成标志
+    data = {}
+    data = {'result': 'success', 'type': 'finished'}  # 抓取完成标志
     queue.put_nowait(data)
 
 
@@ -258,10 +252,8 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
                 elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
                     queue.put_nowait(data)  # 告诉主线程抓取完成
                     break
-                    
-                    
             elif data['result'] == 'error':
-                queue.put_nowait(data) 
+                queue.put_nowait(data)
                 break
         except:
             print("queue is empty wait for a while")
@@ -283,8 +275,8 @@ if __name__ == '__main__':
     # print(sign)
 
     queue = Queue()
-    Thread(target=put_into_queue, args=(params, queue)).start()
-    Thread(target=get_from_queue, args=(queue, db)).start()
+    Thread(target=put_into_queue, args=(params, queue), daemon=True).start()
+    Thread(target=get_from_queue, args=(queue, db), daemon=True).start()
 
     while True:  # 该循环是用来判断何时关闭数据库
         try:
