@@ -214,7 +214,7 @@ def download(filename, url):  # 下载视频
 
 def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据，放进队列
     i = 0
-    while i < 10000:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据
+    while i < 10000:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据，最后爬取的视频数不是1万整
         video_params = get_video_params(params)
         for video_data in get_video_info(video_params):
             if video_data['result'] == 'success':
