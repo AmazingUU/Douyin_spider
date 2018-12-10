@@ -132,7 +132,7 @@ def get_video_info(params):  # 获取视频相关数据
             data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
             yield data
     except Exception as e:
-        print('get_video_info() error,', e)
+        print('get_video_info() error,', str(e))
         data = {}
         data['result'] = 'error'
         yield data
@@ -172,7 +172,7 @@ def get_comment_info(params):  # 获取评论相关数据
                                                    data['user']))
             yield data
     except Exception as e:
-        print('get_comment_info() error,', e)
+        print('get_comment_info() error,', str(e))
         data = {}
         data['result'] = 'error'
         yield data
@@ -228,11 +228,13 @@ def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据
                         comment_data['type'] = 'comment'
                         queue.put_nowait(comment_data)
                     elif comment_data['result'] == 'error':
-                        queue.put_nowait(video_data)
-                        break
+                        continue
+                        # queue.put_nowait(comment_data)
+                        # break
             elif video_data['result'] == 'error':
-                queue.put_nowait(video_data)
-                break
+                continue
+                # queue.put_nowait(video_data)
+                # break
         time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
     data = {}
     data = {'result': 'success', 'type': 'finished'}  # 抓取完成标志
@@ -252,16 +254,16 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
                 elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
                     queue.put_nowait(data)  # 告诉主线程抓取完成
                     break
-            elif data['result'] == 'error':
-                queue.put_nowait(data)
-                break
+            # elif data['result'] == 'error':
+            #     queue.put_nowait(data)
+            #     break
         except:
             print("queue is empty wait for a while")
             time.sleep(2)
 
 
 if __name__ == '__main__':
-    configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
+    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
     db = DbHelper()
     db.connenct(configs)
 
@@ -281,9 +283,9 @@ if __name__ == '__main__':
     while True:  # 该循环是用来判断何时关闭数据库
         try:
             data = queue.get_nowait()
-            if data['result'] == 'error':
-                db.close()
-                break
+            # if data['result'] == 'error':
+            #     db.close()
+            #     break
             if data['type'] == 'finished':
                 db.close()
                 break
