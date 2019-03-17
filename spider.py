@@ -5,6 +5,7 @@ github地址：https://github.com/AppSign/douyin
 import datetime
 import json
 import os
+import sys
 import time
 from queue import Queue
 from threading import Thread
@@ -14,11 +15,25 @@ import requests
 from db_helper import DbHelper
 
 
-def get_device(url):  # 获取设备信息
-    r = requests.get(url).json()
-    device_info = r['data']
-    return device_info
+# def get_device(url):  # 获取设备信息
+#     r = requests.get(url).json()
+#     device_info = r['data']
+#     return device_info
 
+def get_device():
+    device_info = {
+        'iid':'51050168070',
+        'idfa':'887748FC-0DA1-4984-B87F-F2FC9AC5D14B',
+        'device_type':'iPhone5,2',
+        'os_version':'10.3.3',
+        'screen_width':'640',
+        'vid':'AECABC99-0F66-4086-86BC-EC4E01B4DEA1',
+        'device_id':'59415024289',
+        'os_api':'18',
+        'device_platform':'iphone',
+        'openudid':'75a4bc255848cd7901e166e5c168b23e3e9394a8',
+    }
+    return device_info
 
 def get_token(url):  # 获取token信息
     r = requests.get(url).json()
@@ -88,7 +103,8 @@ def get_comment_params(params, video_id):  # 拼接评论接口url中剩下的�
 
 
 def params2str(params):  # 参数转化成url中需要拼接的字符串
-    query = ''
+    # query = ''
+    query = 'https://aweme.snssdk.com/aweme/v1/feed/?'
     for k, v in params.items():
         query += '%s=%s&' % (k, v)
     query = query.strip('&')
@@ -96,14 +112,24 @@ def params2str(params):  # 参数转化成url中需要拼接的字符串
     return query
 
 
-def get_sign(token, query):  # 调用接口获取加密签名，该签名拼接在url参数中组成完整的接口请求参数
-    r = requests.post('https://api.appsign.vip:2688/sign', json={'token': token, 'query': query}).json()
-    if r['success']:
-        sign = r['data']
-    else:
-        sign = r['success']
-    return sign
+# def get_sign(token, query):  # 调用接口获取加密签名，该签名拼接在url参数中组成完整的接口请求参数
+#     r = requests.post('https://api.appsign.vip:2688/sign', json={'token': token, 'query': query}).json()
+#     if r['success']:
+#         sign = r['data']
+#     else:
+#         sign = r['success']
+#     return sign
 
+def get_sign_url(form_data):
+    headers = {
+        "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
+    }
+    try:
+        sign_url = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data,headers=headers).json()['url']
+    except Exception as e:
+        sign_url = None
+        print('get_sign_url() error:',str(e))
+    return sign_url
 
 def get_video_info(params):  # 获取视频相关数据
     headers = {
@@ -263,43 +289,44 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
 
 
 
-def get_video():  # 获取视频相关数据
+def get_video(url):  # 获取视频相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
     # 视频接口url样例：https://aweme-eagle.snssdk.com/aweme/v1/feed/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=mobile&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&count=6&feed_style=0&filter_warn=0&max_cursor=0&min_cursor=0&pull_type=0&type=0&volume=0.06&mas=0161b6c4a20babcf6829e30950a9f3a577adb04abc0c6da0eeca91&as=a105e18ff4e32b1a102320&ts=1542462004
     # 返回视频相关信息的JSON，视频相关数据在aweme_list里
     # try:
-    form_data = {
-        'url':'https://aweme.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=6&volume=0.3333333333333333&pull_type=2&need_relieve_aweme=0&filter_warn=0&is_cold_start=0&js_sdk_version=1.2.2&app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=59121099964&iid=50416179430&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&resolution=1080*1920&openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128'
-    }
-    r = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()
-    print(r)
-
-
-    #     video_list = r['aweme_list']
-    #     for video in video_list:  # 共6个video
-    #         data = {}
-    #         data['result'] = 'success'
-    #         data['author'] = video['author']['nickname']  # 视频作者
-    #         data['video_id'] = video['aweme_id']  # 视频id
-    #         data['description'] = video['desc']  # 描述
-    #         data['like_count'] = video['statistics']['digg_count']  # 点赞数
-    #         data['comment_count'] = video['statistics']['comment_count']  # 评论数
-    #         data['share_count'] = video['statistics']['share_count']  # 分享数
-    #         data['music_author'] = video['music']['author']  # 背景音乐作者
-    #         data['music_title'] = video['music']['title']  # 背景音乐名称
-    #         data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
-    #         print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
-    #                                            data['video_id']))
-    #         # 下载保存的文件名称
-    #         data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
-    #         yield data
-    # except Exception as e:
-    #     print('get_video_info() error,', str(e))
-    #     data = {}
-    #     data['result'] = 'error'
-    #     yield data
+    # form_data = {
+    #     # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=6&volume=0.3333333333333333&pull_type=2&need_relieve_aweme=0&filter_warn=0&is_cold_start=0&js_sdk_version=1.2.2&app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=59121099964&iid=50416179430&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&resolution=1080*1920&openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128'
+    #     'url':'https://aweme.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=6&volume=0.3333333333333333&pull_type=2&need_relieve_aweme=0&filter_warn=0&is_cold_start=0&js_sdk_version=1.2.2&app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=59121099964&iid=50416179430&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&resolution=1080*1920&openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128'
+    # }
+    # r = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()
+    # print(r)
+    r = requests.get(url,headers=headers).json()
+    try:
+        video_list = r['aweme_list']
+        for video in video_list:  # 共6个video
+            data = {}
+            data['result'] = 'success'
+            data['author'] = video['author']['nickname']  # 视频作者
+            data['video_id'] = video['aweme_id']  # 视频id
+            data['description'] = video['desc']  # 描述
+            data['like_count'] = video['statistics']['digg_count']  # 点赞数
+            data['comment_count'] = video['statistics']['comment_count']  # 评论数
+            data['share_count'] = video['statistics']['share_count']  # 分享数
+            data['music_author'] = video['music']['author']  # 背景音乐作者
+            data['music_title'] = video['music']['title']  # 背景音乐名称
+            data['download_url'] = video['video']['play_addr']['url_list'][0]  # 无水印视频播放地址
+            print('{}\tget video_id:{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+                                               data['video_id']))
+            # 下载保存的文件名称
+            data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
+            yield data
+    except Exception as e:
+        print('get_video_info() error,', str(e))
+        data = {}
+        data['result'] = 'error'
+        yield data
 
 if __name__ == '__main__':
     # configs = {'host': '***', 'user': '***', 'password': '***', 'db': '***'}
@@ -307,13 +334,20 @@ if __name__ == '__main__':
     # db.connenct(configs)
     #
     # device_info = get_device('https://api.appsign.vip:2688/douyin/device/new/version/2.7.0')
+    device_info = get_device()
     # token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
-    # app_info = get_app_info()
-    # params = get_common_params(device_info, app_info)
-    # query = params2str(params)
-    # sign = get_sign(token, query)
+    app_info = get_app_info()
+    params = get_common_params(device_info, app_info)
+    form_data = {
+        'url':params2str(params)
+    }
+    print(form_data)
+    sign_url = get_sign_url(form_data)
+    if not sign_url:
+        print('sign_url is None')
+        sys.exit()
     # params.update(sign)  # url参数中拼接签名
-    # # print(sign)
+    print(sign_url)
     #
     # queue = Queue()
     # Thread(target=put_into_queue, args=(params, queue), daemon=True).start()
@@ -332,4 +366,5 @@ if __name__ == '__main__':
     #         print('spidering...')
     #         time.sleep(10)
 
-    get_video()
+    # for data in get_video(sign_url):
+    #     pass
