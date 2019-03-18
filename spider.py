@@ -20,19 +20,11 @@ from db_helper import DbHelper
 #     device_info = r['data']
 #     return device_info
 
-def get_device():
-    device_info = {
-        'iid':'51050168070',
-        'idfa':'887748FC-0DA1-4984-B87F-F2FC9AC5D14B',
-        'device_type':'iPhone5,2',
-        'os_version':'10.3.3',
-        'screen_width':'640',
-        'vid':'AECABC99-0F66-4086-86BC-EC4E01B4DEA1',
-        'device_id':'59415024289',
-        'os_api':'18',
-        'device_platform':'iphone',
-        'openudid':'75a4bc255848cd7901e166e5c168b23e3e9394a8',
+def get_device(url):
+    headers = {
+        "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
+    device_info = requests.get(url,headers=headers).json()
     return device_info
 
 def get_token(url):  # 获取token信息
@@ -78,18 +70,18 @@ def get_common_params(device_info, app_info):  # 拼接视频接口和评论接�
     return params
 
 
-def get_video_params(params):  # 拼接视频接口url中剩下的参数
-    params.update({
-        'count': '6',
-        'feed_style': '0',
-        'filter_warn': '0',
-        'max_cursor': '0',
-        'min_cursor': '0',
-        'pull_type': '0',
-        'type': '0',
-        'volume': '0.06'
-    })
-    return params
+# def get_video_params(params):  # 拼接视频接口url中剩下的参数
+#     params.update({
+#         'count': '6',
+#         'feed_style': '0',
+#         'filter_warn': '0',
+#         'max_cursor': '0',
+#         'min_cursor': '0',
+#         'pull_type': '0',
+#         'type': '0',
+#         'volume': '0.06'
+#     })
+#     return params
 
 
 def get_comment_params(params, video_id):  # 拼接评论接口url中剩下的参数
@@ -287,7 +279,81 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
             print("queue is empty wait for a while")
             time.sleep(2)
 
-
+def get_video_params(device_info):
+    # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?
+    # type=0&
+    # max_cursor=0&
+    # min_cursor=-1&
+    # count=6&
+    # volume=0.3333333333333333&
+    # pull_type=2&
+    # need_relieve_aweme=0&
+    # filter_warn=0&
+    # is_cold_start=0&
+    # js_sdk_version=1.2.2&
+    # app_type=normal&
+    # manifest_version_code=321&
+    # _rticket=1541682949911&
+    # ac=wifi&
+    # device_id=59121099964&
+    # iid=50416179430&
+    # os_version=8.1.0&
+    # channel=gray_3306&
+    # version_code=330&
+    # device_type=ONEPLUS%20A5000&
+    # language=zh&
+    # vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&
+    # resolution=1080*1920&
+    # openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&
+    # update_version_code=3216&
+    # app_name=aweme&
+    # version_name=3.3.0&
+    # os_api=27&
+    # device_brand=OnePlus&
+    # ssmix=a&
+    # device_platform=android&
+    # dpi=420&
+    # aid=1128'
+    params = {
+        'type':'0',
+        'max_cursor':'0',
+        'min_cursor':'-1',
+        'count':'6',
+        'volume':'0.06',
+        'pull_type':'2',
+        'need_relieve_aweme':'0',
+        'filter_warn':'0',
+        'is_cold_start':'0',
+        'js_sdk_version':'1.2.2',
+        'app_type':'normal',
+        'manifest_version_code':'321',
+        '_rticket':'1541682949911',
+        'ac':'wifi',
+        # 'device_id':'59121099964',
+        'device_id':device_info['device_id'],
+        # 'iid':'50416179430',
+        'iid':device_info['iid'],
+        'os_version':'8.1.0',
+        'channel':'gray_3306',
+        'version_code':'330',
+        'device_type':'ONEPLUS%20A5000',
+        'language':'zh',
+        'vid':'C2DD3A72-18E8-490e-B58A-86AD20BB8035',
+        'resolution':'1080*1920',
+        # 'openudid':'27b34f50ff0ba8e26c5747b59bd6d160fbdff384',
+        'openudid':device_info['openudid'],
+        'uuid':device_info['uuid'],
+        'update_version_code':'3216',
+        'app_name':'aweme',
+        'version_name':'3.3.0',
+        'os_api':'27',
+        'device_brand':'OnePlus',
+        'ssmix':'a',
+        'device_platform':'android',
+        'dpi':'420',
+        'aid':'1128'
+    }
+    return params
 
 def get_video(url):  # 获取视频相关数据
     headers = {
@@ -302,6 +368,7 @@ def get_video(url):  # 获取视频相关数据
     # }
     # r = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()
     # print(r)
+
     r = requests.get(url,headers=headers).json()
     try:
         video_list = r['aweme_list']
@@ -334,12 +401,17 @@ if __name__ == '__main__':
     # db.connenct(configs)
     #
     # device_info = get_device('https://api.appsign.vip:2688/douyin/device/new/version/2.7.0')
-    device_info = get_device()
     # token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
-    app_info = get_app_info()
-    params = get_common_params(device_info, app_info)
+    # app_info = get_app_info()
+    # params = get_common_params(device_info, app_info)
+    device_info = get_device('https://jokeai.zongcaihao.com/douyin/v292/device')
+    video_params = get_video_params(device_info)
+    # print(video_params)
     form_data = {
-        'url':params2str(params)
+        'url':params2str(video_params)
+        # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&device_type=iPhone5,2&version_code=2.7.0&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=27014&device_platform=iphone&js_sdk_version=2.7.0.1&app_version=2.7.0&ac=mobile&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Stroe&count=6&feed_style=0&filter_warn=0&max_cursor=0&min_cursor=0&pull_type=0&type=0&volume=0.06'
+        #                                                type=0 max_cursor=0 min_cursor=0  count=6 volume=0.06               pull_type=0                      filter_warn=0                 js_sdk_version=2.7.0.1                                                                ac=mobile device_id=59415024289 iid=51050168070 os_version=10.3.3 channel=App%20Stroe version_code=2.7.0 device_type=iPhone5.2            vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1                      openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8                          app_name=aweme                    os_api=18                              device_platform=iphone          aid=1128
+        # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=6&volume=0.3333333333333333&pull_type=2&need_relieve_aweme=0&filter_warn=0&is_cold_start=0&js_sdk_version=1.2.2&app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=59121099964&iid=50416179430&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&resolution=1080*1920&openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128'
     }
     print(form_data)
     sign_url = get_sign_url(form_data)
@@ -365,6 +437,7 @@ if __name__ == '__main__':
     #     except:
     #         print('spidering...')
     #         time.sleep(10)
-
-    # for data in get_video(sign_url):
-    #     pass
+    for i in range(3):
+        for data in get_video(sign_url):
+            pass
+        time.sleep(1)
