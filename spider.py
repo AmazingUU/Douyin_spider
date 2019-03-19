@@ -25,6 +25,8 @@ def get_device(url):
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
     device_info = requests.get(url,headers=headers).json()
+    # device_info = requests.get(url,headers=headers).text
+    # print(device_info)
     return device_info
 
 # def get_token(url):  # 获取token信息
@@ -355,7 +357,7 @@ def get_comment_params(device_info):
         'device_platform':'android',
         'dpi':'420',
         'aid':'1128',
-        # 'aweme_id':'6615981222587796743',
+        'aweme_id':'6615981222587796743',
         'cursor':'0',
         'count':'10',
     }
@@ -409,6 +411,7 @@ def get_comment(sign_url):  # 获取评论相关数据
     # 返回评论相关信息的JSON，评论相关数据在comments里
     try:
         r = requests.get(sign_url,headers=headers).json()
+        print(r)
         comment_list = r['comments']
         for comment in comment_list:  # 共10个comment
             data = {}
@@ -460,7 +463,6 @@ if __name__ == '__main__':
     form_data = {
         # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(video_params)
         'url':'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params)
-        # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=6&volume=0.3333333333333333&pull_type=2&need_relieve_aweme=0&filter_warn=0&is_cold_start=0&js_sdk_version=1.2.2&app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=59121099964&iid=50416179430&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&vid=C2DD3A72-18E8-490e-B58A-86AD20BB8035&resolution=1080*1920&openudid=27b34f50ff0ba8e26c5747b59bd6d160fbdff384&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128'
     }
     print(form_data)
     sign_url = get_sign_url(form_data)
@@ -469,9 +471,12 @@ if __name__ == '__main__':
         sys.exit()
     # params.update(sign)  # url参数中拼接签名
     print(sign_url)
+    # encrypt_params = sign_url[sign_url.find('&ts'):]
+    # print(encrypt_params)
     # print(sign_url[:sign_url.find('&cursor=0')] + '&aweme_id=6615981222587796743' + sign_url[sign_url.find('&cursor=0'):])
-    sign_url += '&aweme_id=6615981222587796743'
+    # sign_url += '&aweme_id=6615981222587796743'
 
+    # print('https://aweme.snssdk.com/aweme/v1/comment/list/?app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=66824795500&iid=66366486673&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&uuid=081842993724660&resolution=1080*1920&openudid=5501633197642028&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128&aweme_id=6615981222587796743&cursor=0&count=10&ts=1552998381&as=a1158d49ad7eec5f804355&cp=ddebc252d10198f7e1Yiaq&mas=019c6ac3414510d7dd5b1203dc0ac1a1a8acaccc2c0c1c66acc6a6')
     #
     # queue = Queue()
     # Thread(target=put_into_queue, args=(params, queue), daemon=True).start()
