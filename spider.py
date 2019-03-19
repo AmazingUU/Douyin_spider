@@ -233,18 +233,21 @@ def download(filename, url):  # 下载视频
 
 
 # def put_into_queue(params, queue):  # 获取接口返回的视频和评论数据，放进队列
-def put_into_queue(sign_url, queue):  # 获取接口返回的视频和评论数据，放进队列
+def put_into_queue(feed_url ,queue):  # 获取接口返回的视频和评论数据，放进队列
     i = 0
-    while i < 10000:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据，最后爬取的视频数不是1万整
+    # while i < 10000:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据，最后爬取的视频数不是1万整
+    while i < 6:  # 每天抓取10000个左右视频，因为get_video_info()一次返回6个视频数据，最后爬取的视频数不是1万整
         # video_params = get_video_params(params)
-        for video_data in get_video(sign_url):
+        for video_data in get_feed(feed_url):
             if video_data['result'] == 'success':
                 i += 1
                 print('today video num:', i)
                 video_data['type'] = 'video'
                 queue.put_nowait(video_data)
-                comment_params = get_comment_params(params, video_data['video_id'])
-                for comment_data in get_comment_info(comment_params):
+                # comment_params = get_comment_params(device_info, video_data['video_id'])
+                comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id={}&cursor=0'.format(video_data['video_id'])
+                # for comment_data in get_comment_info(comment_params):
+                for comment_data in get_comment(comment_api):
                     if comment_data['result'] == 'success':
                         comment_data['type'] = 'comment'
                         queue.put_nowait(comment_data)
@@ -282,30 +285,27 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
             print("queue is empty wait for a while")
             time.sleep(2)
 
-def get_video_params(device_info):
+# def get_feed_params(device_info):
+def get_feed_params():
     params = {
-        # 'need_relieve_aweme':'0',
-        # 'filter_warn':'0',
-        # 'is_cold_start':'0',
-        # 'js_sdk_version':'1.2.2',
         'app_type':'normal',
         'manifest_version_code':'321',
         '_rticket':'1541682949911',
         'ac':'wifi',
-        # 'device_id':'59121099964',
-        'device_id':device_info['device_id'],
-        # 'iid':'50416179430',
-        'iid':device_info['iid'],
+        'device_id':'59121099964',
+        # 'device_id':device_info['device_id'],
+        'iid':'50416179430',
+        # 'iid':device_info['iid'],
         'os_version':'8.1.0',
         'channel':'gray_3306',
         'version_code':'330',
         'device_type':'ONEPLUS%20A5000',
         'language':'zh',
-        'uuid':device_info['uuid'],
+        # 'uuid':device_info['uuid'],
         'resolution':'1080*1920',
-        'openudid':device_info['openudid'],
+        # 'openudid':device_info['openudid'],
         # 'vid':'C2DD3A72-18E8-490e-B58A-86AD20BB8035',
-        # 'openudid':'27b34f50ff0ba8e26c5747b59bd6d160fbdff384',
+        'openudid':'27b34f50ff0ba8e26c5747b59bd6d160fbdff384',
         'update_version_code':'3216',
         'app_name':'aweme',
         'version_name':'3.3.0',
@@ -324,7 +324,7 @@ def get_video_params(device_info):
     }
     return params
 
-def get_comment_params(device_info):
+def get_comment_params():
     params = {
         # 'need_relieve_aweme':'0',
         # 'filter_warn':'0',
@@ -334,20 +334,20 @@ def get_comment_params(device_info):
         'manifest_version_code':'321',
         '_rticket':'1541682949911',
         'ac':'wifi',
-        # 'device_id':'59121099964',
-        'device_id':device_info['device_id'],
-        # 'iid':'50416179430',
-        'iid':device_info['iid'],
+        'device_id':'59121099964',
+        # 'device_id':device_info['device_id'],
+        'iid':'50416179430',
+        # 'iid':device_info['iid'],
         'os_version':'8.1.0',
         'channel':'gray_3306',
         'version_code':'330',
         'device_type':'ONEPLUS%20A5000',
         'language':'zh',
-        'uuid':device_info['uuid'],
+        # 'uuid':device_info['uuid'],
         'resolution':'1080*1920',
-        'openudid':device_info['openudid'],
+        # 'openudid':device_info['openudid'],
         # 'vid':'C2DD3A72-18E8-490e-B58A-86AD20BB8035',
-        # 'openudid':'27b34f50ff0ba8e26c5747b59bd6d160fbdff384',
+        'openudid':'27b34f50ff0ba8e26c5747b59bd6d160fbdff384',
         'update_version_code':'3216',
         'app_name':'aweme',
         'version_name':'3.3.0',
@@ -358,12 +358,13 @@ def get_comment_params(device_info):
         'dpi':'420',
         'aid':'1128',
         'aweme_id':'6615981222587796743',
+        # 'aweme_id':video_id,
         'cursor':'0',
         'count':'10',
     }
     return params
 
-def get_video(sign_url):  # 获取视频相关数据
+def get_feed(feed_url):  # 获取视频相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
@@ -377,7 +378,7 @@ def get_video(sign_url):  # 获取视频相关数据
     # r = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()
     # print(r)
 
-    r = requests.get(sign_url,headers=headers).json()
+    r = requests.get(feed_url,headers=headers).json()
     try:
         video_list = r['aweme_list']
         for video in video_list:  # 共6个video
@@ -403,15 +404,15 @@ def get_video(sign_url):  # 获取视频相关数据
         data['result'] = 'error'
         yield data
 
-def get_comment(sign_url):  # 获取评论相关数据
+def get_comment(comment_api):  # 获取评论相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)"
     }
     # 评论接口样例：https://aweme.snssdk.com/aweme/v2/comment/list/?iid=51050168070&idfa=887748FC-0DA1-4984-B87F-F2FC9AC5D14B&version_code=3.1.0&device_type=iPhone5,2&aid=1128&os_version=10.3.3&screen_width=640&pass-region=1&vid=AECABC99-0F66-4086-86BC-EC4E01B4DEA1&device_id=59415024289&os_api=18&app_name=aweme&build_number=31006&device_platform=iphone&js_sdk_version=1.3.0.1&app_version=3.1.0&ac=WIFI&openudid=75a4bc255848cd7901e166e5c168b23e3e9394a8&channel=App%20Store&aweme_id=6624665048084122888&count=20&cursor=0&insert_ids=&mas=01198234838414691343a02f57be4c745b5a7406c5ebf53dbcd6a8&as=a195301fa2978b61f50218&ts=1542783346
     # 返回评论相关信息的JSON，评论相关数据在comments里
     try:
-        r = requests.get(sign_url,headers=headers).json()
-        print(r)
+        # r = requests.get(comment_api,headers=headers).json()['data']
+        r = requests.get(comment_api,headers=headers).json()
         comment_list = r['comments']
         for comment in comment_list:  # 共10个comment
             data = {}
@@ -445,41 +446,32 @@ def get_comment(sign_url):  # 获取评论相关数据
 
 
 if __name__ == '__main__':
-    # configs = {'host': 'localhost', 'user': 'admin', 'password': 'admin', 'db': 'douyin'}
+    # configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
     # db = DbHelper()
     # db.connenct(configs)
-    #
-    # device_info = get_device('https://api.appsign.vip:2688/douyin/device/new/version/2.7.0')
-    # token = get_token('https://api.appsign.vip:2688/token/douyin/version/2.7.0')
-    # app_info = get_app_info()
-    # params = get_common_params(device_info, app_info)
 
-
-
-    device_info = get_device('https://jokeai.zongcaihao.com/douyin/v292/device')
-    # video_params = get_video_params(device_info)
-    comment_params = get_comment_params(device_info)
+    # device_info = get_device('https://jokeai.zongcaihao.com/douyin/v292/device')
+    feed_params = get_feed_params()
+    comment_params = get_comment_params()
     # print(video_params)
     form_data = {
-        # 'url':'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(video_params)
-        'url':'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params)
+        'url':'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(feed_params)
+        # 'url':'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params)
     }
     print(form_data)
-    sign_url = get_sign_url(form_data)
-    if not sign_url:
-        print('sign_url is None')
+    feed_url = get_sign_url(form_data)
+    if not feed_url:
+        print('get sign fail')
         sys.exit()
     # params.update(sign)  # url参数中拼接签名
-    print(sign_url)
-    # encrypt_params = sign_url[sign_url.find('&ts'):]
-    # print(encrypt_params)
-    # print(sign_url[:sign_url.find('&cursor=0')] + '&aweme_id=6615981222587796743' + sign_url[sign_url.find('&cursor=0'):])
-    # sign_url += '&aweme_id=6615981222587796743'
+    print(feed_url)
+    encrypt_params = feed_url[feed_url('&ts'):]
+    print(encrypt_params)
 
-    # print('https://aweme.snssdk.com/aweme/v1/comment/list/?app_type=normal&manifest_version_code=321&_rticket=1541682949911&ac=wifi&device_id=66824795500&iid=66366486673&os_version=8.1.0&channel=gray_3306&version_code=330&device_type=ONEPLUS%20A5000&language=zh&uuid=081842993724660&resolution=1080*1920&openudid=5501633197642028&update_version_code=3216&app_name=aweme&version_name=3.3.0&os_api=27&device_brand=OnePlus&ssmix=a&device_platform=android&dpi=420&aid=1128&aweme_id=6615981222587796743&cursor=0&count=10&ts=1552998381&as=a1158d49ad7eec5f804355&cp=ddebc252d10198f7e1Yiaq&mas=019c6ac3414510d7dd5b1203dc0ac1a1a8acaccc2c0c1c66acc6a6')
-    #
+    comment_api = 'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params) + encrypt_params
+
     # queue = Queue()
-    # Thread(target=put_into_queue, args=(params, queue), daemon=True).start()
+    # Thread(target=put_into_queue, args=(feed_url, queue), daemon=True).start()
     # Thread(target=get_from_queue, args=(queue, db), daemon=True).start()
 
     # while True:  # 该循环是用来判断何时关闭数据库
@@ -495,9 +487,9 @@ if __name__ == '__main__':
     #         print('spidering...')
     #         time.sleep(10)
 
-
+    # comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id=6615981222587796743&cursor=0'
     # for i in range(3):
     # for data in get_video(sign_url):
-    for data in get_comment(sign_url):
+    for data in get_comment(comment_api):
         pass
     #     time.sleep(1)
