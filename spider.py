@@ -119,7 +119,7 @@ def get_sign_url(form_data):
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
     try:
-        sign_url = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data,headers=headers).json()['url']
+        sign_url = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign',data=form_data,headers=headers).json()['url']
     except Exception as e:
         sign_url = None
         print('get_sign_url() error:',str(e))
@@ -245,14 +245,14 @@ def put_into_queue(feed_url ,queue):  # 获取接口返回的视频和评论数�
                 video_data['type'] = 'video'
                 queue.put_nowait(video_data)
                 # comment_params = get_comment_params(device_info, video_data['video_id'])
-                comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id={}&cursor=0'.format(video_data['video_id'])
-                # for comment_data in get_comment_info(comment_params):
-                for comment_data in get_comment(comment_api):
-                    if comment_data['result'] == 'success':
-                        comment_data['type'] = 'comment'
-                        queue.put_nowait(comment_data)
-                    elif comment_data['result'] == 'error':
-                        continue
+                # comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id={}&cursor=0'.format(video_data['video_id'])
+                # # for comment_data in get_comment_info(comment_params):
+                # for comment_data in get_comment(comment_api):
+                #     if comment_data['result'] == 'success':
+                #         comment_data['type'] = 'comment'
+                #         queue.put_nowait(comment_data)
+                #     elif comment_data['result'] == 'error':
+                #         continue
                         # queue.put_nowait(comment_data)
                         # break
             elif video_data['result'] == 'error':
@@ -273,8 +273,8 @@ def get_from_queue(queue, db):  # 获取队列里的视频和评论数据，保�
                 if data['type'] == 'video':
                     # download(data['filename'], data['download_url']) # 1w个视频大约需要20G，因存储空间不足，暂不下载
                     db.save_one_data_to_video(data)
-                elif data['type'] == 'comment':
-                    db.save_one_data_to_comment(data)
+                # elif data['type'] == 'comment':
+                #     db.save_one_data_to_comment(data)
                 elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
                     queue.put_nowait(data)  # 告诉主线程抓取完成
                     break
@@ -446,9 +446,9 @@ def get_comment(comment_api):  # 获取评论相关数据
 
 
 if __name__ == '__main__':
-    # configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
-    # db = DbHelper()
-    # db.connenct(configs)
+    configs = {'host': 'localhost', 'user': 'root', 'password': 'admin', 'db': 'douyin'}
+    db = DbHelper()
+    db.connenct(configs)
 
     # device_info = get_device('https://jokeai.zongcaihao.com/douyin/v292/device')
     feed_params = get_feed_params()
@@ -465,31 +465,31 @@ if __name__ == '__main__':
         sys.exit()
     # params.update(sign)  # url参数中拼接签名
     print(feed_url)
-    encrypt_params = feed_url[feed_url('&ts'):]
-    print(encrypt_params)
+    # encrypt_params = feed_url[feed_url('&ts'):]
+    # print(encrypt_params)
 
-    comment_api = 'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params) + encrypt_params
+    # comment_api = 'https://aweme.snssdk.com/aweme/v1/comment/list/?' + params2str(comment_params) + encrypt_params
 
-    # queue = Queue()
-    # Thread(target=put_into_queue, args=(feed_url, queue), daemon=True).start()
-    # Thread(target=get_from_queue, args=(queue, db), daemon=True).start()
+    queue = Queue()
+    Thread(target=put_into_queue, args=(feed_url, queue), daemon=True).start()
+    Thread(target=get_from_queue, args=(queue, db), daemon=True).start()
 
-    # while True:  # 该循环是用来判断何时关闭数据库
-    #     try:
-    #         data = queue.get_nowait()
-    #         # if data['result'] == 'error':
-    #         #     db.close()
-    #         #     break
-    #         if data['type'] == 'finished':
-    #             db.close()
-    #             break
-    #     except:
-    #         print('spidering...')
-    #         time.sleep(10)
+    while True:  # 该循环是用来判断何时关闭数据库
+        try:
+            data = queue.get_nowait()
+            # if data['result'] == 'error':
+            #     db.close()
+            #     break
+            if data['type'] == 'finished':
+                db.close()
+                break
+        except:
+            print('spidering...')
+            time.sleep(10)
 
     # comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id=6615981222587796743&cursor=0'
     # for i in range(3):
     # for data in get_video(sign_url):
-    for data in get_comment(comment_api):
-        pass
+    # for data in get_comment(comment_api):
+    #     pass
     #     time.sleep(1)
