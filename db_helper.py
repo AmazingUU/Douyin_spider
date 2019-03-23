@@ -75,6 +75,17 @@ class DbHelper(object):
         finally:
             self.mutex = 0  # 解锁
 
+    def find_today_video(self):
+        try:
+            with self.db.cursor() as cursor:
+                sql = 'select video_id from video where DATE(create_time) = CURDATE()'
+                cursor.execute(sql)
+                res = cursor.fetchall()
+                return res
+        except Exception as e:
+            print('find_today_video fail,error:', str(e))
+            return None
+
     # def find_all_detail(self):
     #     try:
     #         with self.db.cursor() as cursor:

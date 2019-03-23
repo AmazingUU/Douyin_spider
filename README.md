@@ -4,6 +4,9 @@
 # 项目博客
 [Python 抖音视频和评论爬虫][5]
 
+# 20190323 更新
+因原加签项目[AppSign][4]停止提供服务，所以换了另外的加签项目[Sign-DouYin][6]，目前该项目还可用。
+
 # 简介
 定时爬取抖音首页随机视频，保存相关视频信息和评论信息到数据库，并将视频下载到本地
 
@@ -32,3 +35,4 @@
   [3]: https://github.com/AmazingUU/Douyin_spider/blob/master/imgs/download.png
   [4]: https://github.com/AppSign/douyin
   [5]:https://blog.csdn.net/AmazingUU/article/details/84947880
+  [6]:https://github.com/JokeAI/Sign-DouYin
