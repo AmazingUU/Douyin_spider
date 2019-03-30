@@ -21,24 +21,29 @@ def params2str(params):  # 参数转化成url中需要拼接的字符串
     return query
 
 
-def get_sign_url(form_data): # 获取带有加密参数的url
+def get_feed_url(): # 获取带有加密参数的url
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
     # proxies = {
     #     'http': 'http://'
     # }
+    feed_params = get_feed_params()
+    form_data = {
+        'url': 'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(feed_params)
+    }
+    print('未带加密参数url:', form_data)
     try:
         # sign_url = requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign',proxies=proxies,data=form_data,headers=headers).json()['url']
         # 根据开源项目获取加密参数，要求提供加密之前的url
-        sign_url = \
+        feed_url = \
             requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()[
                 'url']
+        print('带有加密参数的完整url:', feed_url)
     except Exception as e:
-        sign_url = None
+        feed_url = None
         print('get_sign_url() error:', str(e))
-    return sign_url
-
+    return feed_url
 
 def timestamp2datetime(timestamp):  # 时间戳转日期时间格式
     time = int(timestamp)
@@ -74,10 +79,21 @@ def download(filename, url):  # 下载视频
                           end='' if (size / content_size) != 1 else '\n')
 
 
-def put_into_queue(feed_url, queue):  # 获取接口返回的视频数据，放进队列
-    i = 0
+def put_into_queue(queue):  # 获取接口返回的视频数据，放进队列
+    i = 0 # 抓取的视频个数
+    # 测试发现获取的带有加密参数的url，利用该url请求大概50多个视频之后，返回的是video_list
+    # 就为空了，应该是加密参数过期了，所以需要一个flag来判断加密参数是否过期
+    flag = 0 # 加密参数是否过期
+    feed_url = None
     while i < 10000:  # 每天抓取10000个左右视频，因为get_feed()一次返回6个视频数据，最后爬取的视频数不是1万整
-        for video_data in get_feed(feed_url):
+        if flag == 0: # 加密参数初始化或已经过期，需要重新获取url
+            feed_url = get_feed_url()
+            flag = 1
+        video_list = get_video_list(feed_url)
+        if not video_list: # 利用video_list是否为空，判断加密url是否过期
+            flag = 0
+            continue
+        for video_data in get_video_info(video_list):
             if video_data['result'] == 'success':
                 i += 1
                 print('today video num:', i)
@@ -94,7 +110,7 @@ def put_into_queue(feed_url, queue):  # 获取接口返回的视频数据，放�
                 #         continue
             elif video_data['result'] == 'error':
                 continue
-        time.sleep(10)  # 加密签名为github开源服务，作者要求禁止高并发请求访问公用服务器，所以降低请求频率
+        time.sleep(5)  # 降低请求频率，防止IP被封
     data = {}
     data = {'result': 'success', 'type': 'finished'}  # 抓取完成标志
     queue.put_nowait(data)
@@ -161,14 +177,26 @@ def get_feed_params():
     return params
 
 
-def get_feed(feed_url):  # 获取视频相关数据
+def get_video_list(feed_url):  # 获取视频相关数据
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
 
     r = requests.get(feed_url, headers=headers).json()
+    # print(r)
+    video_list = r['aweme_list']
+    return video_list
+
+    # if video_list:
+    #     return video_list
+    # else:
+    #     feed_url = get_feed_url()
+    #     get_video_list(feed_url)
+
+def get_video_info(video_list):
     try:
-        video_list = r['aweme_list']
+        # video_list = r['aweme_list']
+        # if video_list:
         for video in video_list:  # 共6个video
             data = {}
             data['result'] = 'success'
@@ -186,6 +214,10 @@ def get_feed(feed_url):  # 获取视频相关数据
             # 下载保存的文件名称
             data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
             yield data
+        # else:
+        #     feed_url = get_sign_url()
+        #     get_feed(feed_url)
+
     except Exception as e:
         print('get_video_info() error,', str(e))
         data = {}
@@ -198,19 +230,24 @@ if __name__ == '__main__':
     db = DbHelper()
     db.connenct(configs)
 
-    feed_params = get_feed_params()
-    form_data = {
-        'url': 'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(feed_params)
-    }
-    print('未带加密参数url:', form_data)
-    feed_url = get_sign_url(form_data)
-    if not feed_url:
-        print('get sign fail')
-        sys.exit()
-    print('带有加密参数的完整url:', feed_url)
+    # feed_params = get_feed_params()
+    # form_data = {
+    #     'url': 'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(feed_params)
+    # }
+    # print('未带加密参数url:', form_data)
+    # feed_url = get_sign_url(form_data)
+    # if not feed_url:
+    #     print('get sign fail')
+    #     sys.exit()
+    # print('带有加密参数的完整url:', feed_url)
+
+    # feed_url = get_feed_url()
+    # if not feed_url:
+    #     print('get sign fail')
+    #     sys.exit()
 
     queue = Queue()
-    Thread(target=put_into_queue, args=(feed_url, queue), daemon=True).start()
+    Thread(target=put_into_queue, args=(queue,), daemon=True).start()
     Thread(target=get_from_queue, args=(queue, db), daemon=True).start()
 
     while True:  # 该循环是用来判断何时关闭数据库
