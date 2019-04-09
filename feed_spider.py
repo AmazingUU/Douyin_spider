@@ -9,7 +9,6 @@ from queue import Queue
 from threading import Thread
 
 import requests
-from bypy import ByPy
 
 from db_helper import DbHelper
 
@@ -21,6 +20,7 @@ def params2str(params):  # 参数转化成url中需要拼接的字符串
     query = query.strip('&')
     return query
 
+
 # 需要自己获取代理，不获取代理也可以，但就是最开始能获取到加密url，后面就会被封IP获取不到了加密url了
 # 我自己用的代理是讯代理，我是看到这篇文章（https://cuiqingcai.com/5094.html）
 # 之后选的讯代理，感觉还可以，独享模式可用率确实挺高，价格还可以。
@@ -30,13 +30,14 @@ def get_proxy():
     proxies = requests.get('xxx')
     return proxies.text
 
-def get_feed_url(): # 获取带有加密参数的url
+
+def get_feed_url():  # 获取带有加密参数的url
     headers = {
         "User-Agent": "Aweme/2.8.0 (iPhone; iOS 11.0; Scale/2.00)",
     }
-    proxies = {
-        'http': 'http://' + get_proxy()
-    }
+    # proxies = {
+    #     'http': 'http://' + get_proxy()
+    # }
     feed_params = get_feed_params()
     form_data = {
         'url': 'https://aweme.snssdk.com/aweme/v1/feed/?' + params2str(feed_params)
@@ -44,18 +45,19 @@ def get_feed_url(): # 获取带有加密参数的url
     print('未带加密参数url:', form_data)
     try:
         # 根据开源项目获取加密参数，要求提供加密之前的url
-        feed_url = \
-            requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', proxies=proxies,data=form_data, headers=headers).json()[
-                'url']
-        # 下面是不使用代理获取feed_url，可做最开始的测试用
         # feed_url = \
-        #     requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign',data=form_data, headers=headers).json()[
+        #     requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', proxies=proxies,data=form_data, headers=headers).json()[
         #         'url']
+        # 下面是不使用代理获取feed_url，可做最开始的测试用
+        feed_url = \
+            requests.post('http://jokeai.zongcaihao.com/douyin/v292/sign', data=form_data, headers=headers).json()[
+                'url']
         print('带有加密参数的完整url:', feed_url)
     except Exception as e:
         feed_url = None
         print('get_sign_url() error:', str(e))
     return feed_url
+
 
 def timestamp2datetime(timestamp):  # 时间戳转日期时间格式
     time = int(timestamp)
@@ -92,20 +94,20 @@ def download(filename, url):  # 下载视频
 
 
 def put_into_queue(queue):  # 获取接口返回的视频数据，放进队列
-    i = 0 # 抓取的视频个数
+    i = 0  # 抓取的视频个数
     # 测试发现获取的带有加密参数的url，利用该url请求大概50多个视频之后，返回的是video_list
     # 就为空了，应该是加密参数过期了，所以需要一个flag来判断加密参数是否过期
-    flag = 0 # 加密参数是否过期
+    flag = 0  # 加密参数是否过期
     feed_url = None
-    while i < 1000:  # 每天抓取1000个左右视频，因为get_feed()一次返回6个视频数据，最后爬取的视频数不是1万整
-        if flag == 0: # 加密参数初始化或已经过期，需要重新获取url
+    while i < 5:  # 每天抓取1000个左右视频，因为get_feed()一次返回6个视频数据，最后爬取的视频数不是1万整
+        if flag == 0:  # 加密参数初始化或已经过期，需要重新获取url
             feed_url = get_feed_url()
-            if feed_url: # 如果为空说明代理失效
+            if feed_url:  # 如果为空说明代理失效
                 flag = 1
             else:
                 continue
         video_list = get_video_list(feed_url)
-        if not video_list: # 利用video_list是否为空，判断加密url是否过期
+        if not video_list:  # 利用video_list是否为空，判断加密url是否过期
             flag = 0
             continue
         for video_data in get_video_info(video_list):
@@ -114,21 +116,13 @@ def put_into_queue(queue):  # 获取接口返回的视频数据，放进队列
                 print('today video num:', i)
                 video_data['type'] = 'video'
                 queue.put_nowait(video_data)
-                # comment_params = get_comment_params(device_info, video_data['video_id'])
-                # comment_api = 'https://jokeai.zongcaihao.com/douyin/v292/comment/list?aweme_id={}&cursor=0'.format(video_data['video_id'])
-                # # for comment_data in get_comment_info(comment_params):
-                # for comment_data in get_comment(comment_api):
-                #     if comment_data['result'] == 'success':
-                #         comment_data['type'] = 'comment'
-                #         queue.put_nowait(comment_data)
-                #     elif comment_data['result'] == 'error':
-                #         continue
             elif video_data['result'] == 'error':
                 continue
-        time.sleep(5)  # 降低请求频率，防止IP被封
-    data = {}
-    data = {'result': 'success', 'type': 'finished'}  # 抓取完成标志
+        time.sleep(3)  # 降低请求频率，防止IP被封
+    # data = {}
+    data = {'result': 'success', 'type': 'putFinished'}  # 抓取完成标志
     queue.put_nowait(data)
+
 
 def get_from_queue(queue, db):  # 获取队列里的视频数据，保存到数据库和下载视频
     while True:
@@ -137,14 +131,16 @@ def get_from_queue(queue, db):  # 获取队列里的视频数据，保存到数�
             if data['result'] == 'success':
                 if data['type'] == 'video':
                     # 每天1000个视频大约2G左右，下载时注意磁盘空间
+                    db.save_one_data_to_video(data)
                     download(data['filename'], data['download_url'])
+                    queue.task_done()
                     # if upload2bypy(file_path):
                     #     os.remove(file_path)
                     #     print(file_path + ' removed')
-                    db.save_one_data_to_video(data)
                 # elif data['type'] == 'comment':
                 #     db.save_one_data_to_comment(data)
-                elif data['type'] == 'finished':  # 抓取完成后子线程退出循环
+                elif data['type'] == 'putFinished':  # 抓取完成后子线程退出循环
+                    data['type'] = 'getFinished'
                     queue.put_nowait(data)  # 告诉主线程抓取完成
                     break
         except:
@@ -168,7 +164,7 @@ def get_feed_params():
         'device_type': 'ONEPLUS%20A6010',
         'language': 'zh',
         # 'uuid':device_info['uuid'],
-        'uuid':'869386044722596',
+        'uuid': '869386044722596',
         'resolution': '1080*2261',
         # 'openudid':device_info['openudid'],
         # 'vid':'C2DD3A72-18E8-490e-B58A-86AD20BB8035',
@@ -224,9 +220,6 @@ def get_video_info(video_list):
             # 下载保存的文件名称
             data['filename'] = data['description'] if data['description'] else data['author'] + '_' + data['video_id']
             yield data
-        # else:
-        #     feed_url = get_sign_url()
-        #     get_feed(feed_url)
 
     except Exception as e:
         print('get_video_info() error,', str(e))
@@ -247,7 +240,8 @@ if __name__ == '__main__':
     while True:  # 该循环是用来判断何时关闭数据库
         try:
             data = queue.get_nowait()
-            if data['type'] == 'finished':
+            if data['type'] == 'getFinished':
+                db.close()
                 break
         except:
             print('spidering...')
