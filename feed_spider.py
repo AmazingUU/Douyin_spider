@@ -99,7 +99,7 @@ def put_into_queue(queue):  # 获取接口返回的视频数据，放进队列
     # 就为空了，应该是加密参数过期了，所以需要一个flag来判断加密参数是否过期
     flag = 0  # 加密参数是否过期
     feed_url = None
-    while i < 5:  # 每天抓取1000个左右视频，因为get_feed()一次返回6个视频数据，最后爬取的视频数不是1万整
+    while i < 1000:  # 每天抓取1000个左右视频，因为get_feed()一次返回6个视频数据，最后爬取的视频数不是1万整
         if flag == 0:  # 加密参数初始化或已经过期，需要重新获取url
             feed_url = get_feed_url()
             if feed_url:  # 如果为空说明代理失效
@@ -122,7 +122,6 @@ def put_into_queue(queue):  # 获取接口返回的视频数据，放进队列
     # data = {}
     data = {'result': 'success', 'type': 'putFinished'}  # 抓取完成标志
     queue.put_nowait(data)
-
 
 def get_from_queue(queue, db):  # 获取队列里的视频数据，保存到数据库和下载视频
     while True:
